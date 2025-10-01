@@ -3,11 +3,11 @@ package com.example.product_catalog_service.service;
 import com.example.product_catalog_service.model.Product;
 import com.example.product_catalog_service.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException; // You may need to import this
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @Service
 public class ProductService {
@@ -15,36 +15,55 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public List<Product> searchProducts(String category, Double minPrice, Double maxPrice, String sortBy) {
-        // Basic find all, which we will enhance
-        // For a more robust solution, you would use MongoTemplate with Criteria API
-        // or Specifications, but this demonstrates the logic simply.
+    // We have REMOVED the old, inefficient searchProducts method.
+    // Our controller now uses the more performant repository methods directly.
 
-        List<Product> products = productRepository.findAll();
+    /**
+     * Partially updates a product based on the provided fields.
+     * @param id The ID of the product to update.
+     * @param updates A map of field names to their new values.
+     * @return The updated and saved product.
+     */
+    public Product updateProduct(String id, Map<String, Object> updates) {
+        // 1. Find the product in the database or throw an error if not found.
+        Product productToUpdate = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceAccessException("Product not found with id: " + id));
 
-        // Filtering logic
-        if (category != null && !category.isEmpty()) {
-            products.removeIf(p -> !p.getCategory().equalsIgnoreCase(category));
-        }
-        if (minPrice != null) {
-            products.removeIf(p -> p.getPrice() < minPrice);
-        }
-        if (maxPrice != null) {
-            products.removeIf(p -> p.getPrice() > maxPrice);
-        }
-
-        // Sorting logic
-        if (sortBy != null && !sortBy.isEmpty()) {
-            if (sortBy.equalsIgnoreCase("priceAsc")) {
-                products.sort((p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice()));
-            } else if (sortBy.equalsIgnoreCase("priceDesc")) {
-                products.sort((p1, p2) -> Double.compare(p2.getPrice(), p1.getPrice()));
-            } else if (sortBy.equalsIgnoreCase("ratingDesc")) {
-                products.sort((p1, p2) -> Double.compare(p2.getRating(), p1.getRating()));
+        // 2. Iterate through the updates from the request body.
+        updates.forEach((field, value) -> {
+            switch (field) {
+                case "name":
+                    productToUpdate.setName((String) value);
+                    break;
+                case "description":
+                    productToUpdate.setDescription((String) value);
+                    break;
+                case "price":
+                    if (value instanceof Number) {
+                        productToUpdate.setPrice(((Number) value).doubleValue());
+                    }
+                    break;
+                case "category":
+                    productToUpdate.setCategory((String) value);
+                    break;
+                case "brand":
+                    productToUpdate.setBrand((String) value);
+                    break;
+                case "rating":
+                     if (value instanceof Number) {
+                        productToUpdate.setRating(((Number) value).doubleValue());
+                    }
+                    break;
+                case "tags":
+                    if (value instanceof List) {
+                        productToUpdate.setTags((List<String>) value);
+                    }
+                    break;
+                // You can add more cases here for 'features' or 'specifications' if needed.
             }
-        }
-        
-        return products;
+        });
+
+        // 3. Save the updated product back to the database.
+        return productRepository.save(productToUpdate);
     }
 }
-

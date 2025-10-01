@@ -2,6 +2,7 @@ package com.example.product_catalog_service.controller;
 
 import com.example.product_catalog_service.model.Product;
 import com.example.product_catalog_service.repository.ProductRepository;
+import com.example.product_catalog_service.service.ProductService;
 import com.fasterxml.jackson.core.type.TypeReference; // <-- FIX: Import was missing
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,28 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
+
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ProductService productService; 
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable String id, @RequestBody Map<String, Object> updates) {
+        try {
+            Product updatedProduct = productService.updateProduct(id, updates);
+            return ResponseEntity.ok(updatedProduct);
+        } catch (Exception e) {
+            // This will catch the "Product not found" error from the service
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     // GET all products
     @GetMapping
