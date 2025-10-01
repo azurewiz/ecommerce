@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -34,9 +35,15 @@ public class ProductController {
             Product updatedProduct = productService.updateProduct(id, updates);
             return ResponseEntity.ok(updatedProduct);
         } catch (Exception e) {
-            // This will catch the "Product not found" error from the service
             return ResponseEntity.notFound().build();
         }
+    }
+    
+    // NEW ENDPOINT: Delete all products for easy cleanup
+    @DeleteMapping("/all")
+    public ResponseEntity<String> deleteAllProducts() {
+        productRepository.deleteAll();
+        return ResponseEntity.ok("All products have been deleted.");
     }
 
     // GET all products

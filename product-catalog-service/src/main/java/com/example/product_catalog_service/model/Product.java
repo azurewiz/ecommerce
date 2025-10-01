@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import java.util.List; // <-- NEW: Required for lists/arrays
-import java.util.Map;  // <-- NEW: Required for nested objects
+import java.util.List;
+import java.util.Map;
 
 @Document(collection = "products")
 @Data
@@ -25,10 +25,11 @@ public class Product {
     private String brand;
     private double rating;
     
-    // NEW: Fields to handle complex data from the JSON file
     private List<String> features;
     private List<String> tags;
     private Map<String, String> specifications;
+    
+    private String imageUrl; // Added for product images
 
     private int selectionCount = 0;
 }

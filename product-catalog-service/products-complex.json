@@ -6,7 +6,8 @@
         "category": "Electronics",
         "brand": "QuantumPC",
         "rating": 4.9,
-        "features": [ 
+        "imageUrl": "https://placehold.co/600x400/0f172a/e0e7ff?text=Laptop",
+        "features": [
             "16-inch 4K OLED Display",
             "Backlit Magic Keyboard",
             "Thunderbolt 4 Ports",
@@ -27,6 +28,7 @@
         "category": "Electronics",
         "brand": "Connecta",
         "rating": 4.7,
+        "imageUrl": "https://placehold.co/600x400/0f172a/e0e7ff?text=Speaker",
         "features": [
             "360-degree High-Fidelity Audio",
             "Integrated Smart Home Hub",
@@ -48,6 +50,7 @@
         "category": "Fashion",
         "brand": "Timeless Co.",
         "rating": 4.8,
+        "imageUrl": "https://placehold.co/600x400/0f172a/e0e7ff?text=Hoodie",
         "features": [
             "Made from 100% GOTS certified organic cotton",
             "Brushed fleece interior for softness",
@@ -69,6 +72,7 @@
         "category": "Sports",
         "brand": "Ascend",
         "rating": 4.9,
+        "imageUrl": "https://placehold.co/600x400/0f172a/e0e7ff?text=Boots",
         "features": [
             "Gore-Tex waterproof membrane",
             "Vibram MegaGrip outsole",
