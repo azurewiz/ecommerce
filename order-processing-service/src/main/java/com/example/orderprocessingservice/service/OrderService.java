@@ -11,7 +11,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,7 +46,7 @@ public class OrderService {
 
         // 2. Calculate total price
         double totalPrice = processedItems.stream()
-            .mapToDouble(item -> item.getPriceAtPurchase() * item.getQuantity())
+            .mapToDouble(processedItem -> processedItem.getPriceAtPurchase() * processedItem.getQuantity())
             .sum();
 
         // 3. Create and save the order
@@ -58,5 +57,10 @@ public class OrderService {
         order.setStatus("PENDING");
 
         return orderRepository.save(order);
+    }
+    
+    // This method is for your GET request
+    public List<Order> findAll() {
+        return orderRepository.findAll();
     }
 }

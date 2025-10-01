@@ -1,0 +1,122 @@
+Of course. It's an excellent idea to have a clear test plan. Trying to remember all the different endpoints and parameters is inefficient.
+
+Here is a complete and ordered list of Postman commands to test every feature of your enhanced product-catalog-service. Make sure the service is running on http://localhost:8082 before you begin.
+
+Test Plan: product-catalog-service API
+Phase 1: Populating the Database
+This should be the very first command you run. It will load all the complex product data into your database.
+
+1. Batch Upload Products via File
+
+Purpose: Ingest the entire products_complex.json file in a single request.
+
+Method: POST
+
+URL: http://localhost:8082/api/products/upload
+
+Body:
+
+Select the form-data option.
+
+In the KEY column, enter file.
+
+Change the key's type from Text to File.
+
+In the VALUE column, click "Select Files" and choose the products_complex.json file from your project folder.
+
+Expected Result: A 201 Created status with the message "4 products ingested successfully!".
+
+Phase 2: Verifying Data Retrieval (Basic)
+Now, let's confirm that the data was saved correctly and that our basic GET endpoints work.
+
+2. Get All Products
+
+Purpose: Retrieve the full list of products from the database.
+
+Method: GET
+
+URL: http://localhost:8082/api/products
+
+Action: After sending the request, look at the response body. Copy the "id" value from one of the products (e.g., the "QuantumCore Laptop Pro X"). You'll need it for the next step.
+
+3. Get a Single Product by ID
+
+Purpose: Fetch the details of one specific product.
+
+Method: GET
+
+URL: http://localhost:8082/api/products/PASTE_THE_ID_YOU_COPIED_HERE
+
+Expected Result: A 200 OK status with the JSON object for the single product you requested.
+
+Phase 3: Testing Advanced Filtering & Searching
+This is where we test the powerful custom queries you added to the repository.
+
+4. Search by Category
+
+Purpose: Find all products belonging to the "Electronics" category.
+
+Method: GET
+
+URL: http://localhost:8082/api/products/search?category=Electronics
+
+Expected Result: A list containing the laptop and the smart speaker.
+
+5. Search by Tag
+
+Purpose: Find all products that are tagged as "waterproof".
+
+Method: GET
+
+URL: http://localhost:8082/api/products/search?tag=waterproof
+
+Expected Result: A list containing only the "TerraGrip Pro Hiking Boots".
+
+6. Search by Nested Specification
+
+Purpose: Find the product with a specific CPU. This tests our ability to query nested data.
+
+Method: GET
+
+URL: http://localhost:8082/api/products/search?specKey=CPU&specValue=Quantum i9 14th Gen
+
+Expected Result: A list containing only the "QuantumCore Laptop Pro X".
+
+Phase 4: Testing Single Item Creation
+Finally, let's make sure our original endpoint for creating a single product still works.
+
+7. Create One New Product
+
+Purpose: Add a single product by sending its JSON data in the request body.
+
+Method: POST
+
+URL: http://localhost:8082/api/products
+
+Body:
+
+Select the raw option and set the type to JSON.
+
+Paste the following:
+
+JSON
+
+{
+    "name": "Zenith Wireless Earbuds",
+    "description": "Crystal-clear audio with active noise cancellation.",
+    "price": 149.99,
+    "category": "Electronics",
+    "brand": "Connecta",
+    "rating": 4.8,
+    "tags": ["audio", "earbuds", "bluetooth", "noise-cancelling"]
+}
+Expected Result: A 201 Created status with the full JSON object of the newly created earbuds. You can then run the "Get All Products" command again to see your new product in the list.
+
+The Postman Command to Use
+Purpose: To increment the selectionCount of a specific product.
+
+Method: PUT
+
+URL: http://localhost:8082/api/products/{your_product_id}/select
+
+Body: None

@@ -1,0 +1,86 @@
+[
+    {
+        "name": "QuantumCore Laptop Pro X",
+        "description": "A top-tier laptop for professionals and power users, featuring the latest generation processor and a vibrant 4K display.",
+        "price": 1899.99,
+        "category": "Electronics",
+        "brand": "QuantumPC",
+        "rating": 4.9,
+        "features": [ 
+            "16-inch 4K OLED Display",
+            "Backlit Magic Keyboard",
+            "Thunderbolt 4 Ports",
+            "All-day Battery Life"
+        ],
+        "tags": ["laptop", "professional", "4k", "powerful"],
+        "specifications": {
+            "CPU": "Quantum i9 14th Gen",
+            "RAM": "32GB DDR5",
+            "Storage": "2TB NVMe SSD",
+            "GPU": "Advanced Graphics Pro 8GB"
+        }
+    },
+    {
+        "name": "EchoSphere Max Smart Speaker",
+        "description": "Room-filling, high-fidelity audio that adapts to your space. Voice-controlled with built-in smart home hub.",
+        "price": 199.99,
+        "category": "Electronics",
+        "brand": "Connecta",
+        "rating": 4.7,
+        "features": [
+            "360-degree High-Fidelity Audio",
+            "Integrated Smart Home Hub",
+            "Multi-room Music Support",
+            "Privacy Controls"
+        ],
+        "tags": ["smart speaker", "audio", "home assistant", "bluetooth"],
+        "specifications": {
+            "Connectivity": "Wi-Fi 6, Bluetooth 5.2",
+            "Drivers": "3-inch woofer, dual tweeters",
+            "Voice Assistant": "Connecta AI",
+            "Color": "Charcoal"
+        }
+    },
+    {
+        "name": "Evergreen Organic Cotton Hoodie",
+        "description": "An ultra-soft and sustainable hoodie, perfect for everyday comfort and style. Made from 100% organic cotton.",
+        "price": 89.95,
+        "category": "Fashion",
+        "brand": "Timeless Co.",
+        "rating": 4.8,
+        "features": [
+            "Made from 100% GOTS certified organic cotton",
+            "Brushed fleece interior for softness",
+            "Pre-shrunk for a consistent fit",
+            "Durable double-stitched seams"
+        ],
+        "tags": ["hoodie", "organic", "sustainable", "casual"],
+        "specifications": {
+            "Material": "100% Organic Cotton",
+            "Fit": "Modern Relaxed",
+            "Origin": "Ethically Sourced",
+            "Weight": "Mid-weight"
+        }
+    },
+    {
+        "name": "TerraGrip Pro Hiking Boots",
+        "description": "Waterproof, breathable, and built for the toughest trails. Provides excellent ankle support and superior traction.",
+        "price": 225.00,
+        "category": "Sports",
+        "brand": "Ascend",
+        "rating": 4.9,
+        "features": [
+            "Gore-Tex waterproof membrane",
+            "Vibram MegaGrip outsole",
+            "Ortholite cushioned insole",
+            "Full-grain leather upper"
+        ],
+        "tags": ["hiking", "boots", "waterproof", "outdoor"],
+        "specifications": {
+            "Waterproofing": "Gore-Tex Performance",
+            "Outsole": "Vibram MegaGrip",
+            "Weight": "1.2 kg per pair",
+            "Midsole": "EVA Foam"
+        }
+    }
+]

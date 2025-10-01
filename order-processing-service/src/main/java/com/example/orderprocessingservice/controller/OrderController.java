@@ -22,4 +22,9 @@ public class OrderController {
     public Order createOrder(@RequestBody List<OrderItem> items) {
         return orderService.createOrder(items);
     }
+
+    @GetMapping
+    public List<Order> getAllOrders() {
+        return orderService.findAll();
+    }
 }

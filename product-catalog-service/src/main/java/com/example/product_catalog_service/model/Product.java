@@ -6,16 +6,29 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-@Document(collection = "products") // Maps this class to the "products" collection in MongoDB
-@Data // Lombok: auto-generates getters, setters, toString, etc.
+import java.util.List; // <-- NEW: Required for lists/arrays
+import java.util.Map;  // <-- NEW: Required for nested objects
+
+@Document(collection = "products")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
 
     @Id
-    private String id; // MongoDB will auto-generate this
+    private String id;
 
     private String name;
     private String description;
     private double price;
+    private String category;
+    private String brand;
+    private double rating;
+    
+    // NEW: Fields to handle complex data from the JSON file
+    private List<String> features;
+    private List<String> tags;
+    private Map<String, String> specifications;
+
+    private int selectionCount = 0;
 }
