@@ -3,7 +3,7 @@ package com.example.product_catalog_service.controller;
 import com.example.product_catalog_service.model.Product;
 import com.example.product_catalog_service.repository.ProductRepository;
 import com.example.product_catalog_service.service.ProductService;
-import com.fasterxml.jackson.core.type.TypeReference; // <-- FIX: Import was missing
+import com.fasterxml.jackson.core.type.TypeReference; 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 
-@CrossOrigin(origins = "http://localhost:3000")
+
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
