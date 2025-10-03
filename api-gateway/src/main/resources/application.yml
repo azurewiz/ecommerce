@@ -1,28 +1,39 @@
 server:
   port: 8084
 
+app:
+  jwt:
+    secret: ThisIsMySuperSecureAndVeryLongSecretKeyForJwtHS512Algorithm12345
+
 spring:
   cloud:
     gateway:
-      server: # This is the new level
-        webflux: # This is the new level
+      server:
+        webflux:
           routes:
+            # Route #1: Product Service
             - id: product_service_route
               uri: http://localhost:8082
               predicates:
                 - Path=/api/products/**
+            
+            # Route #2: Order Service
             - id: order_service_route
               uri: http://localhost:8083
               predicates:
                 - Path=/api/orders/**
+              filters:
+                - AuthenticationFilter
+
+            # NEW Route #3: User Service
+            - id: user_service_route
+              uri: http://localhost:8085
+              predicates:
+                - Path=/api/auth/**
+          
           globalcors:
             cors-configurations:
               '[/**]':
                 allowedOrigins: "http://localhost:3000"
-                allowedMethods:
-                  - GET
-                  - POST
-                  - PUT
-                  - PATCH
-                  - DELETE
+                allowedMethods: [GET, POST, PUT, PATCH, DELETE]
                 allowedHeaders: "*"

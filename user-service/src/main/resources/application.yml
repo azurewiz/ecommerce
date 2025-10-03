@@ -1,0 +1,18 @@
+server:
+  port: 8085 # A new port for our new service
+
+spring:
+  application:
+    name: user-service
+  data:
+    mongodb:
+      # We use the same database, but a different collection
+      uri: mongodb+srv://ecommerce_user:9EYefbJIHlXvfo49@cluster0.9j7hf.mongodb.net/now?retryWrites=true&w=majority&appName=Cluster0
+
+# Custom properties for our JWT security
+# In user-service/src/main/resources/application.yml
+app:
+  jwt:
+    # This key is 64 characters long (512 bits) and will work with HS512.
+    secret: ThisIsMySuperSecureAndVeryLongSecretKeyForJwtHS512Algorithm12345
+    expiration-ms: 86400000
