@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 // --- Configuration ---
 const API_GATEWAY_URL = 'http://localhost:8084';
 const PRODUCT_SERVICE_URL = `${API_GATEWAY_URL}/api/products`;
+const AUTH_SERVICE_URL = `${API_GATEWAY_URL}/api/auth`;
 const ORDER_SERVICE_URL = `${API_GATEWAY_URL}/api/orders`;
 
 // --- SVG Icons ---
@@ -54,7 +55,6 @@ const CartModal = ({ cartItems, onUpdateQuantity, onRemoveItem, onClose, onCheck
                     <h2 className="text-xl font-semibold text-white">Your Cart</h2>
                     <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors"><CloseIcon className="w-6 h-6" /></button>
                 </div>
-                
                 {cartItems.length === 0 ? (
                     <div className="flex-grow flex items-center justify-center"><p className="text-slate-400">Your cart is empty.</p></div>
                 ) : (
@@ -71,7 +71,6 @@ const CartModal = ({ cartItems, onUpdateQuantity, onRemoveItem, onClose, onCheck
                         ))}
                     </div>
                 )}
-
                 {cartItems.length > 0 && (
                     <div className="p-4 border-t border-slate-700">
                         <div className="flex justify-between items-center mb-4"><span className="text-slate-400">Subtotal</span><span className="text-white text-xl font-bold">${subtotal.toFixed(2)}</span></div>
@@ -87,7 +86,6 @@ const CartModal = ({ cartItems, onUpdateQuantity, onRemoveItem, onClose, onCheck
 
 const ProductDetailModal = ({ product, onClose, onAddToCart }) => {
     if (!product) return null;
-
     return (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" onClick={onClose}>
             <div className="bg-slate-800 rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
@@ -107,17 +105,11 @@ const ProductDetailModal = ({ product, onClose, onAddToCart }) => {
                     </div>
                     <div className="mt-8">
                         <h3 className="text-xl font-semibold text-white border-b border-slate-700 pb-2 mb-4">Features</h3>
-                        <ul className="list-disc list-inside text-slate-300 space-y-2">
-                            {product.features?.map((feature, index) => <li key={index}>{feature}</li>)}
-                        </ul>
+                        <ul className="list-disc list-inside text-slate-300 space-y-2">{product.features?.map((feature, index) => <li key={index}>{feature}</li>)}</ul>
                     </div>
                      <div className="mt-8">
                         <h3 className="text-xl font-semibold text-white border-b border-slate-700 pb-2 mb-4">Specifications</h3>
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-slate-300">
-                            {product.specifications && Object.entries(product.specifications).map(([key, value]) => (
-                                <div key={key}><span className="font-semibold text-slate-400">{key}:</span> {value}</div>
-                            ))}
-                        </div>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-slate-300">{product.specifications && Object.entries(product.specifications).map(([key, value]) => (<div key={key}><span className="font-semibold text-slate-400">{key}:</span> {value}</div>))}</div>
                     </div>
                 </div>
             </div>
@@ -126,18 +118,7 @@ const ProductDetailModal = ({ product, onClose, onAddToCart }) => {
 };
 
 const OrderConfirmationPage = ({ order, onContinueShopping }) => {
-    if (!order) {
-        return (
-            <div className="container mx-auto p-4 text-center">
-                <h2 className="text-2xl font-bold text-red-400">Order Not Found</h2>
-                <p className="text-slate-400">Something went wrong. Please try again.</p>
-                <button onClick={onContinueShopping} className="mt-6 bg-cyan-500 text-white font-bold py-2 px-6 rounded-md hover:bg-cyan-600 transition-colors">
-                    Back to Store
-                </button>
-            </div>
-        );
-    }
-    
+    if (!order) { return ( <div className="container mx-auto p-4 text-center"><h2 className="text-2xl font-bold text-red-400">Order Not Found</h2><p className="text-slate-400">Something went wrong. Please try again.</p><button onClick={onContinueShopping} className="mt-6 bg-cyan-500 text-white font-bold py-2 px-6 rounded-md hover:bg-cyan-600 transition-colors">Back to Store</button></div>); }
     return (
         <main className="container mx-auto p-4 md:p-8">
             <div className="max-w-2xl mx-auto bg-slate-800 rounded-lg shadow-2xl p-8">
@@ -146,47 +127,82 @@ const OrderConfirmationPage = ({ order, onContinueShopping }) => {
                     <h1 className="text-3xl font-bold text-white">Thank You For Your Order!</h1>
                     <p className="text-slate-400 mt-2">Your order has been placed successfully.</p>
                 </div>
-
                 <div className="bg-slate-700 p-4 rounded-lg mb-6">
                     <h2 className="text-lg font-semibold text-white mb-2">Order Summary</h2>
-                    <div className="flex justify-between text-slate-300">
-                        <span>Order ID:</span>
-                        <span className="font-mono">{order.id}</span>
-                    </div>
-                    <div className="flex justify-between text-slate-300">
-                        <span>Order Date:</span>
-                        <span>{new Date(order.orderDate).toLocaleDateString()}</span>
-                    </div>
+                    <div className="flex justify-between text-slate-300"><span>Order ID:</span><span className="font-mono">{order.id}</span></div>
+                    <div className="flex justify-between text-slate-300"><span>Order Date:</span><span>{new Date(order.orderDate).toLocaleDateString()}</span></div>
                 </div>
-
                 <div>
                     <h3 className="text-lg font-semibold text-white mb-4">Items Ordered</h3>
-                    <div className="space-y-4">
-                        {order.items.map(item => (
-                            <div key={item.productId} className="flex justify-between items-center">
-                                <div>
-                                    <p className="font-medium text-white">{item.productName}</p>
-                                    <p className="text-sm text-slate-400">Qty: {item.quantity}</p>
-                                </div>
-                                <p className="text-white">${(item.priceAtPurchase * item.quantity).toFixed(2)}</p>
-                            </div>
-                        ))}
-                    </div>
+                    <div className="space-y-4">{order.items.map(item => (<div key={item.productId} className="flex justify-between items-center"><div><p className="font-medium text-white">{item.productName}</p><p className="text-sm text-slate-400">Qty: {item.quantity}</p></div><p className="text-white">${(item.priceAtPurchase * item.quantity).toFixed(2)}</p></div>))}</div>
                 </div>
-
                 <div className="border-t border-slate-700 mt-6 pt-6">
-                    <div className="flex justify-between font-bold text-xl text-white">
-                        <span>Total:</span>
-                        <span>${order.totalPrice.toFixed(2)}</span>
-                    </div>
+                    <div className="flex justify-between font-bold text-xl text-white"><span>Total:</span><span>${order.totalPrice.toFixed(2)}</span></div>
                 </div>
                  <div className="text-center mt-8">
-                    <button onClick={onContinueShopping} className="bg-cyan-500 text-white font-bold py-3 px-8 rounded-md hover:bg-cyan-600 transition-colors">
-                        Continue Shopping
-                    </button>
+                    <button onClick={onContinueShopping} className="bg-cyan-500 text-white font-bold py-3 px-8 rounded-md hover:bg-cyan-600 transition-colors">Continue Shopping</button>
                 </div>
             </div>
         </main>
+    );
+};
+
+const AuthModal = ({ onClose, onLoginSuccess }) => {
+    const [mode, setMode] = useState('login');
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [message, setMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleRegister = async (e) => {
+        e.preventDefault(); setIsLoading(true); setError(''); setMessage('');
+        try {
+            const response = await fetch(`${AUTH_SERVICE_URL}/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, email, password }), });
+            if (!response.ok) { const errorText = await response.text(); throw new Error(errorText || 'Registration failed'); }
+            setMessage('Registration successful! Please log in.');
+            setMode('login');
+        } catch (err) { setError(err.message); } finally { setIsLoading(false); }
+    };
+
+    const handleLogin = async (e) => {
+        e.preventDefault(); setIsLoading(true); setError('');
+        try {
+            const response = await fetch(`${AUTH_SERVICE_URL}/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }), });
+             if (!response.ok) { const errorText = await response.text(); throw new Error(errorText || 'Login failed'); }
+            const data = await response.json();
+            onLoginSuccess(data.accessToken);
+        } catch (err) { setError(err.message); } finally { setIsLoading(false); }
+    };
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+            <div className="bg-slate-800 rounded-lg shadow-2xl w-full max-w-sm p-8 relative">
+                <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white"><CloseIcon className="w-6 h-6" /></button>
+                {mode === 'login' ? (
+                    <form onSubmit={handleLogin}>
+                        <h2 className="text-2xl font-bold text-white mb-6 text-center">Login</h2>
+                        {error && <p className="bg-red-900/50 text-red-300 text-sm p-3 rounded-md mb-4">{error}</p>}
+                        {message && <p className="bg-green-900/50 text-green-300 text-sm p-3 rounded-md mb-4">{message}</p>}
+                        <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} className="w-full bg-slate-700 text-white p-3 rounded-md mb-4" required />
+                        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} className="w-full bg-slate-700 text-white p-3 rounded-md mb-4" required />
+                        <button type="submit" disabled={isLoading} className="w-full bg-cyan-500 text-white font-bold py-3 rounded-md hover:bg-cyan-600 disabled:bg-slate-600">{isLoading ? 'Logging in...' : 'Login'}</button>
+                        <p className="text-center text-sm text-slate-400 mt-4">Don't have an account? <button type="button" onClick={() => { setMode('register'); setError(''); }} className="text-cyan-400 font-semibold">Sign Up</button></p>
+                    </form>
+                ) : (
+                    <form onSubmit={handleRegister}>
+                        <h2 className="text-2xl font-bold text-white mb-6 text-center">Create Account</h2>
+                        {error && <p className="bg-red-900/50 text-red-300 text-sm p-3 rounded-md mb-4">{error}</p>}
+                        <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} className="w-full bg-slate-700 text-white p-3 rounded-md mb-4" required />
+                        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} className="w-full bg-slate-700 text-white p-3 rounded-md mb-4" required />
+                        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} className="w-full bg-slate-700 text-white p-3 rounded-md mb-4" required />
+                        <button type="submit" disabled={isLoading} className="w-full bg-cyan-500 text-white font-bold py-3 rounded-md hover:bg-cyan-600 disabled:bg-slate-600">{isLoading ? 'Creating Account...' : 'Sign Up'}</button>
+                        <p className="text-center text-sm text-slate-400 mt-4">Already have an account? <button type="button" onClick={() => { setMode('login'); setError(''); }} className="text-cyan-400 font-semibold">Log In</button></p>
+                    </form>
+                )}
+            </div>
+        </div>
     );
 };
 
@@ -201,18 +217,25 @@ export default function App() {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [view, setView] = useState('store');
     const [confirmedOrder, setConfirmedOrder] = useState(null);
-    
+    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+    const [authToken, setAuthToken] = useState(() => localStorage.getItem('authToken'));
+    const [authActionCallback, setAuthActionCallback] = useState(null);
+
     const [cartItems, setCartItems] = useState(() => {
         try {
             const localData = localStorage.getItem('cartItems');
             return localData ? JSON.parse(localData) : [];
-        } catch (error) {
-            console.error("Could not parse cart from localStorage", error);
-            return [];
-        }
+        } catch (error) { return []; }
     });
 
     useEffect(() => { localStorage.setItem('cartItems', JSON.stringify(cartItems)); }, [cartItems]);
+    useEffect(() => {
+        if (authToken) {
+            localStorage.setItem('authToken', authToken);
+        } else {
+            localStorage.removeItem('authToken');
+        }
+    }, [authToken]);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -239,34 +262,31 @@ export default function App() {
             return [...prevItems, { ...productToAdd, quantity: 1 }];
         });
     };
-
     const handleUpdateQuantity = (productId, quantity) => {
         if (quantity < 1) { handleRemoveItem(productId); return; }
         setCartItems(prevItems => prevItems.map(item => item.id === productId ? { ...item, quantity } : item));
     };
-
-    const handleRemoveItem = (productId) => {
-        setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
-    };
+    const handleRemoveItem = (productId) => { setCartItems(prevItems => prevItems.filter(item => item.id !== productId)); };
 
     const handleCheckout = async () => {
+        if (!authToken) {
+            setAuthActionCallback(() => () => handleCheckout());
+            setIsAuthModalOpen(true);
+            setIsCartOpen(false);
+            return;
+        }
         setIsCheckingOut(true);
         const orderItems = cartItems.map(item => ({ productId: item.id, quantity: item.quantity }));
-
         try {
             const response = await fetch(ORDER_SERVICE_URL, { 
                 method: 'POST', 
-                headers: { 'Content-Type': 'application/json' }, 
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` }, 
                 body: JSON.stringify(orderItems) 
             });
-
             if (!response.ok) throw new Error(`Checkout failed! Status: ${response.status}`);
-            
             const newOrder = await response.json();
-            
             setConfirmedOrder(newOrder);
             setView('confirmation');
-            
             setCartItems([]);
             setIsCartOpen(false);
         } catch (error) {
@@ -276,22 +296,30 @@ export default function App() {
         }
     };
     
+    const handleLoginSuccess = (token) => {
+        setAuthToken(token);
+        setIsAuthModalOpen(false);
+        if (authActionCallback) {
+            authActionCallback();
+            setAuthActionCallback(null);
+        }
+    };
+
+    const handleLogout = () => { setAuthToken(null); };
+    
     const renderHeader = () => (
         <header className="bg-slate-800/80 backdrop-blur-sm sticky top-0 z-40">
             <nav className="container mx-auto px-4 py-4 flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-white cursor-pointer" onClick={() => setView('store')}>
-                    Quantum <span className="text-cyan-400">E-Store</span>
-                </h1>
-                {view === 'store' && (
-                    <button onClick={() => setIsCartOpen(true)} className="relative">
-                        <CartIcon className="w-7 h-7 text-slate-300 hover:text-cyan-400 transition-colors" />
-                        {cartItems.length > 0 && (
-                            <span className="absolute -top-2 -right-2 bg-cyan-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                                {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-                            </span>
-                        )}
-                    </button>
-                )}
+                <h1 className="text-2xl font-bold text-white cursor-pointer" onClick={() => setView('store')}> Quantum <span className="text-cyan-400">E-Store</span> </h1>
+                <div className="flex items-center space-x-4">
+                    {view === 'store' && (
+                        <button onClick={() => setIsCartOpen(true)} className="relative">
+                            <CartIcon className="w-7 h-7 text-slate-300 hover:text-cyan-400 transition-colors" />
+                            {cartItems.length > 0 && (<span className="absolute -top-2 -right-2 bg-cyan-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">{cartItems.reduce((acc, item) => acc + item.quantity, 0)}</span>)}
+                        </button>
+                    )}
+                    {authToken ? (<button onClick={handleLogout} className="text-sm font-semibold text-slate-300 hover:text-white">Logout</button>) : (<button onClick={() => setIsAuthModalOpen(true)} className="text-sm font-semibold text-slate-300 hover:text-white">Login</button>)}
+                </div>
             </nav>
         </header>
     );
@@ -319,6 +347,7 @@ export default function App() {
 
             {isCartOpen && <CartModal cartItems={cartItems} onUpdateQuantity={handleUpdateQuantity} onRemoveItem={handleRemoveItem} onClose={() => setIsCartOpen(false)} onCheckout={handleCheckout} isCheckingOut={isCheckingOut} />}
             <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} onAddToCart={handleAddToCart} />
+            {isAuthModalOpen && <AuthModal onClose={() => setIsAuthModalOpen(false)} onLoginSuccess={handleLoginSuccess} />}
         </div>
     );
 }
